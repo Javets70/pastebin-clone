@@ -80,6 +80,6 @@ async def get_paste_by_short_code(
 
 async def list_recent_pastes(db: AsyncSession, limit: int = 20) -> list[Paste]:
     result = await db.execute(
-        select(Paste).where(Paste.is_public == True).order_by(Paste.created_at.desc()).limit(limit)
+        select(Paste).where(Paste.is_public).order_by(Paste.created_at.desc()).limit(limit)
     )
     return list(result.scalars().all())

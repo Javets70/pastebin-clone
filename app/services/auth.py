@@ -1,4 +1,3 @@
-from app.schemas.user import Token, UserCreate
 from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -10,6 +9,7 @@ from app.core.security import (
     verify_password,
 )
 from app.models.user import User
+from app.schemas.user import Token, UserCreate
 
 
 async def create_user(db: AsyncSession, user_data: UserCreate) -> User:

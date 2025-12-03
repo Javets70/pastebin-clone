@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from app.db.session import AsyncSessionLocal
-from sqlalchemy import delete, select
+from sqlalchemy import select
 
 from app.core.celery_app import celery_app
 from app.models.paste import Paste
@@ -15,7 +15,9 @@ def cleanup_expired_pastes():
     async def _cleanup():
         async with AsyncSessionLocal() as db:
             result = await db.execute(
-                select(Paste).where(Paste.expires_at != None, Paste.expires_at < datetime.utcnow())
+                select(Paste).where(
+                    Paste.expires_at is not None, Paste.expires_at < datetime.utcnow()
+                )
             )
             expired_pastes = result.scalars().all()
 
