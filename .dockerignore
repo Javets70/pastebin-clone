@@ -1,0 +1,52 @@
+# Python
+.venv
+venv
+env
+__pycache__
+*.pyc
+*.pyo
+*.egg-info
+.pytest_cache
+.ruff_cache
+dist
+build
+
+# Git
+.git
+.gitignore
+.github
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Project
+.env
+.env.local
+test.db
+*.log
+logs/
+
+# Git
+.git
+.gitignore
+
+# Testing
+htmlcov/
+.coverage
+*.cover
+
+# Database migrations (keep only in dev)
+alembic/versions/*.py

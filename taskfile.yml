@@ -1,0 +1,116 @@
+version: '3'
+env:
+  DOCKER: docker.exe
+
+tasks:
+  # Development
+  dev:
+    desc: Run FastAPI development server
+    cmds:
+      - uv run fastapi dev app/main.py
+
+  install:
+    desc: Install all dependencies
+    cmds:
+      - uv sync
+
+  # Docker
+  docker-up:
+    desc: Start all Docker containers
+    cmds:
+      - "{{.DOCKER}} compose up -d"
+
+  docker-down:
+    desc: Stop all Docker containers
+    cmds:
+      - "{{.DOCKER}} compose down"
+
+  docker-logs:
+    desc: View Docker logs
+    cmds:
+      - "{{.DOCKER}} compose logs -f"
+
+  docker-build:
+    desc: Build docker image for fastapi app
+    cmds:
+      - "{{.DOCKER}} compose build"
+
+  # Database
+  db-migrate:
+    desc: Run Alembic migrations
+    cmds:
+      - uv run alembic upgrade head
+
+  db-revision:
+    desc: Create new Alembic migration
+    cmds:
+      - uv run alembic revision --autogenerate -m "{{.CLI_ARGS}}"
+
+  # Testing
+  test:
+    desc: Run all tests with coverage
+    cmds:
+      - uv run pytest tests/ -v --cov=app
+
+  test-watch:
+    desc: Run tests in watch mode
+    cmds:
+      - uv run pytest-watch
+
+  # Code quality
+  lint:
+    desc: Run Ruff linter
+    cmds:
+      - uv run ruff check .
+
+  format:
+    desc: Format code with Ruff
+    cmds:
+      - uv run ruff format .
+
+  format-check:
+    desc: Check formatting without changes
+    cmds:
+      - uv run ruff format --check .
+
+  # Cleanup
+  clean:
+    desc: Remove cache and build files
+    cmds:
+      - rm -rf __pycache__ .pytest_cache .ruff_cache
+      - find . -type d -name __pycache__ -exec rm -r {} +
+
+  # Celery
+  celery-worker:
+    desc: Start Celery worker
+    cmds:
+      - uv run celery -A app.core.celery_app worker --loglevel=info
+
+  celery-beat:
+    desc: Start Celery beat scheduler
+    cmds:
+      - uv run celery -A app.core.celery_app beat --loglevel=info
+
+  celery-flower:
+    desc: Start Flower (Celery monitoring)
+    cmds:
+      - uv run celery -A app.core.celery_app flower
+
+  # SSL Certificate Generation
+  ssl-generate:
+    desc: Generate self-signed SSL certificate for development
+    cmds:
+      - mkdir nginx/ssl
+      - openssl req -x509 -newkey rsa:4096 -keyout nginx/ssl/key.pem -out nginx/ssl/cert.pem -days 365 -nodes -subj "/C=IN/ST=State/L=City/O=Org/CN=localhost"
+      - print "✓ Self-signed SSL certificate generated"
+
+  # NGINX
+  nginx-logs:
+    desc: View NGINX logs
+    cmds:
+      - "{{.DOCKER}} compose logs -f nginx"
+
+  nginx-test:
+    desc: Test NGINX configuration
+    cmds:
+      - "{{.DOCKER}} compose exec nginx nginx -t"
