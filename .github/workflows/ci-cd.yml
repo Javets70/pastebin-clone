@@ -200,4 +200,3 @@ jobs:
 
       - name: Run maintainability index
         run: uv run radon mi app/ || true
-EOF
