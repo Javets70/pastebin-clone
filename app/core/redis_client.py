@@ -12,7 +12,7 @@ class RedisClient:
     async def connect(self):
         """Connect to Redis"""
         self.redis = await aioredis.from_url(
-            f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}",
+            settings.REDIS_URL,
             encoding="utf-8",
             decode_responses=True,
         )

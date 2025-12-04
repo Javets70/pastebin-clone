@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     # Database
     POSTGRES_USER: str = "postgres"
     POSTGRES_PASSWORD: str = "postgres"
-    POSTGRES_HOST: str = "localhost"
+    POSTGRES_HOST: str = "postgres"
     POSTGRES_PORT: int = 5432
     POSTGRES_DB: str = "pastebin"
 
@@ -26,8 +26,15 @@ class Settings(BaseSettings):
     # Redis
     REDIS_HOST: str = "localhost"
     REDIS_PORT: int = 6379
+    REDIS_PASSWORD: str | None = None
 
-    model_config = SettingsConfigDict(env_file=".env")
+    @property
+    def REDIS_URL(self) -> str:  # noqa: N802
+        if self.REDIS_PASSWORD:
+            return f"redis://:{self.REDIS_PASSWORD}@{self.REDIS_HOST}:{self.REDIS_PORT}"
+        return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}"
+
+    model_config = SettingsConfigDict(env_file=".env" if DEBUG else None)
 
 
 settings = Settings()

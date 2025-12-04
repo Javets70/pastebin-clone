@@ -38,6 +38,7 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - DEBUG=False
+      - SECRET_KEY=super-secret-key
     depends_on:
       - postgres
       - redis

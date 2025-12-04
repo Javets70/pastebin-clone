@@ -5,8 +5,8 @@ from app.core.config import settings
 
 celery_app = Celery(
     "pastebin",
-    broker=f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}/0",
-    backend=f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}/0",
+    broker=settings.REDIS_URL,
+    backend=settings.REDIS_URL,
     include=["app.tasks.cleanup"],
 )
 
